@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#0A1730">
+<meta name="theme-color" content="#101A52">
 <title>Lykos Futsal Club — Ton maillot</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,13 +16,14 @@ tailwind.config = {
   theme: {
     extend: {
       colors: {
-        nuit:    '#0A1730',
-        ardoise: '#101F42',
-        bleu:    '#17439B',
-        azur:    '#4C8DFF',
-        craie:   '#EEF3FC',
-        acier:   '#7D8DB2',
-        or:      '#F5C451'
+        marine:  '#101A52',   /* bleu foncé du blason — fond */
+        marine2: '#18235F',   /* cartes */
+        bleu:    '#1E5FD0',   /* bleu royal du maillot */
+        bleu2:   '#2C3A95',   /* bleu du blason */
+        or:      '#C9A94F',   /* or du blason */
+        orclair: '#E2C87E',
+        brume:   '#A9B6DC',   /* texte secondaire */
+        blanc:   '#FFFFFF'
       },
       fontFamily: {
         anton: ['Anton', 'sans-serif'],
@@ -36,112 +37,126 @@ tailwind.config = {
 
 <style>
   :root{
-    --nuit:#0A1730; --ardoise:#101F42; --bleu:#17439B; --azur:#4C8DFF;
-    --craie:#EEF3FC; --acier:#7D8DB2; --or:#F5C451;
-    --maillot-1:#17439B; --maillot-2:#0A1730; --maillot-txt:#FFFFFF;
+    --marine:#101A52; --marine2:#18235F; --bleu:#1E5FD0; --bleu2:#2C3A95;
+    --or:#C9A94F; --orclair:#E2C87E; --brume:#A9B6DC; --blanc:#FFFFFF;
+    /* pilotées par l'onglet Config */
+    --maillot-1:#1E5FD0;   /* rayures */
+    --maillot-2:#FFFFFF;   /* fond du maillot */
+    --maillot-txt:#1B2A6B; /* numéro et flocage */
   }
   html,body{ height:100%; }
   body{
     background:
-      radial-gradient(900px 520px at 50% -8%, rgba(23,67,155,.55), transparent 65%),
-      var(--nuit);
-    color:var(--craie);
+      radial-gradient(880px 500px at 50% -10%, rgba(30,95,208,.45), transparent 62%),
+      var(--marine);
+    color:var(--blanc);
     font-family:'Barlow',sans-serif;
     -webkit-font-smoothing:antialiased;
   }
 
   /* --- Blocs --- */
   .carte{
-    background:rgba(255,255,255,.035);
-    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.10);
     border-radius:16px;
   }
   .etape{
     font-family:'Barlow Condensed',sans-serif;
     font-weight:600; font-size:12px; letter-spacing:.22em; text-transform:uppercase;
-    color:var(--acier); display:flex; align-items:center; gap:10px; margin-bottom:12px;
+    color:var(--brume); display:flex; align-items:center; gap:10px; margin-bottom:12px;
   }
   .etape span{
     display:inline-flex; align-items:center; justify-content:center;
     width:22px; height:22px; border-radius:6px; letter-spacing:0;
-    background:rgba(76,141,255,.16); color:var(--azur); font-size:12px;
+    background:rgba(201,169,79,.18); color:var(--or); font-size:12px; font-weight:700;
   }
-  .etape::after{ content:''; flex:1; height:1px; background:rgba(255,255,255,.08); }
+  .etape::after{ content:''; flex:1; height:1px; background:rgba(255,255,255,.10); }
 
   /* --- Champs --- */
   .champ{
-    width:100%; background:rgba(0,0,0,.25);
-    border:1px solid rgba(255,255,255,.12); border-radius:10px;
-    padding:11px 13px; color:var(--craie); font-size:15px; outline:none;
+    width:100%; background:rgba(0,0,0,.26);
+    border:1px solid rgba(255,255,255,.14); border-radius:10px;
+    padding:11px 13px; color:var(--blanc); font-size:15px; outline:none;
     transition:border-color .15s, box-shadow .15s;
   }
-  .champ::placeholder{ color:rgba(125,141,178,.7); }
-  .champ:focus-visible{ border-color:var(--azur); box-shadow:0 0 0 3px rgba(76,141,255,.2); }
+  .champ::placeholder{ color:rgba(169,182,220,.6); }
+  .champ:focus-visible{ border-color:var(--or); box-shadow:0 0 0 3px rgba(201,169,79,.22); }
   .label{
     font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px;
-    letter-spacing:.1em; text-transform:uppercase; color:var(--acier);
+    letter-spacing:.1em; text-transform:uppercase; color:var(--brume);
     display:block; margin-bottom:6px;
   }
 
-  /* --- Choix (formules + tailles) --- */
+  /* --- Choix --- */
   .puce{
-    font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:16px;
-    letter-spacing:.04em; padding:9px 0; min-width:52px; text-align:center;
-    background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.12);
-    border-radius:10px; color:var(--craie); cursor:pointer;
+    font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:17px;
+    letter-spacing:.04em; padding:10px 0; min-width:52px; text-align:center;
+    background:rgba(0,0,0,.26); border:1px solid rgba(255,255,255,.14);
+    border-radius:10px; color:var(--blanc); cursor:pointer;
     transition:transform .12s, background .15s, border-color .15s, color .15s;
   }
-  .puce:hover{ border-color:rgba(76,141,255,.6); }
+  .puce:hover{ border-color:var(--or); }
   .puce[aria-pressed="true"]{
-    background:var(--azur); border-color:var(--azur); color:#06122B; font-weight:700;
+    background:var(--or); border-color:var(--or); color:#0E1440; font-weight:700;
   }
   .formule{
-    display:flex; align-items:center; gap:12px; width:100%; text-align:left;
-    background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.12);
-    border-radius:12px; padding:13px 14px; color:var(--craie); cursor:pointer;
+    display:flex; align-items:flex-start; gap:12px; width:100%; text-align:left;
+    background:rgba(0,0,0,.26); border:1px solid rgba(255,255,255,.14);
+    border-radius:12px; padding:14px; color:var(--blanc); cursor:pointer;
     transition:background .15s, border-color .15s;
   }
-  .formule:hover{ border-color:rgba(76,141,255,.6); }
-  .formule[aria-pressed="true"]{ border-color:var(--azur); background:rgba(76,141,255,.12); }
+  .formule:hover{ border-color:var(--or); }
+  .formule[aria-pressed="true"]{ border-color:var(--or); background:rgba(201,169,79,.10); }
   .formule .coche{
-    width:20px; height:20px; border-radius:50%; flex:none;
-    border:2px solid rgba(255,255,255,.25); position:relative;
+    width:20px; height:20px; border-radius:50%; flex:none; margin-top:2px;
+    border:2px solid rgba(255,255,255,.28); position:relative;
   }
-  .formule[aria-pressed="true"] .coche{ border-color:var(--azur); }
+  .formule[aria-pressed="true"] .coche{ border-color:var(--or); }
   .formule[aria-pressed="true"] .coche::after{
-    content:''; position:absolute; inset:3px; border-radius:50%; background:var(--azur);
+    content:''; position:absolute; inset:3px; border-radius:50%; background:var(--or);
   }
 
-  /* --- Tableau des numéros --- */
-  #grille{ display:grid; grid-template-columns:repeat(auto-fill,minmax(60px,1fr)); gap:8px; }
+  /* --- Plaques de numéros --- */
+  #grille{ display:grid; grid-template-columns:repeat(auto-fill,minmax(68px,1fr)); gap:9px; }
   .plaque{
     position:relative; aspect-ratio:1/1; border-radius:12px;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
-    font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:24px;
-    color:var(--craie); cursor:pointer; overflow:hidden;
+    background:rgba(255,255,255,.11); border:1px solid rgba(255,255,255,.26);
+    font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:31px;
+    line-height:1; font-variant-numeric:tabular-nums;
+    color:var(--blanc); cursor:pointer; overflow:hidden;
     transition:transform .12s, background .15s, border-color .15s, color .15s;
   }
-  .plaque:hover{ border-color:var(--azur); transform:translateY(-2px); }
+  .plaque:hover{ background:rgba(255,255,255,.18); border-color:var(--or); transform:translateY(-2px); }
   .plaque .flocage{
-    font-family:'Barlow',sans-serif; font-weight:600; font-size:9px;
-    letter-spacing:.04em; text-transform:uppercase; line-height:1;
-    max-width:92%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-    margin-top:2px;
+    font-family:'Barlow',sans-serif; font-weight:600; font-size:9.5px;
+    letter-spacing:.03em; text-transform:uppercase; line-height:1;
+    max-width:94%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    margin-top:3px;
   }
   .plaque.pris{
-    background:rgba(255,255,255,.02); border-color:rgba(255,255,255,.05);
-    color:rgba(125,141,178,.75); cursor:not-allowed;
+    background:rgba(0,0,0,.30); border-color:rgba(255,255,255,.07);
+    color:rgba(169,182,220,.5); cursor:not-allowed; font-weight:600;
   }
-  .plaque.pris:hover{ transform:none; border-color:rgba(255,255,255,.05); }
-  .plaque.pris .flocage{ color:rgba(125,141,178,.85); }
+  .plaque.pris:hover{ transform:none; background:rgba(0,0,0,.30); border-color:rgba(255,255,255,.07); }
+  .plaque.pris .flocage{ color:rgba(169,182,220,.7); }
   .plaque.choisi{
-    background:var(--or); border-color:var(--or); color:#06122B;
-    transform:translateY(-2px); box-shadow:0 8px 22px -8px rgba(245,196,81,.7);
+    background:var(--or); border-color:var(--orclair); color:#0E1440;
+    transform:translateY(-3px); box-shadow:0 10px 26px -8px rgba(201,169,79,.75);
   }
-  .plaque:focus-visible{ outline:2px solid var(--azur); outline-offset:2px; }
+  .plaque:focus-visible{ outline:2px solid var(--or); outline-offset:2px; }
 
-  /* --- Maillot --- */
+  .legende{
+    display:flex; align-items:center; gap:16px; margin-bottom:12px;
+    font-family:'Barlow Condensed',sans-serif; font-size:12.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--brume);
+  }
+  .legende i{
+    display:inline-block; width:12px; height:12px; border-radius:4px;
+    margin-right:6px; vertical-align:-1px;
+  }
+
+  /* --- Animations --- */
   #num-maillot{ transition:opacity .18s; }
   .pop{ animation:pop .28s ease-out; }
   @keyframes pop{ 0%{transform:scale(.82);opacity:.4} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
@@ -151,30 +166,30 @@ tailwind.config = {
   /* --- Barre d'action --- */
   #barre{
     position:fixed; left:0; right:0; bottom:0; z-index:40;
-    background:linear-gradient(to top, rgba(10,23,48,.98) 65%, rgba(10,23,48,0));
+    background:linear-gradient(to top, rgba(16,26,82,.98) 65%, rgba(16,26,82,0));
     padding:14px 16px calc(16px + env(safe-area-inset-bottom));
   }
   .bouton{
     width:100%; border-radius:12px; padding:15px 18px;
     font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:19px;
     letter-spacing:.08em; text-transform:uppercase;
-    background:var(--or); color:#06122B; border:none; cursor:pointer;
-    transition:filter .15s, opacity .15s;
+    background:var(--or); color:#0E1440; border:none; cursor:pointer;
+    transition:filter .15s;
   }
-  .bouton:hover{ filter:brightness(1.06); }
-  .bouton:disabled{ background:rgba(255,255,255,.09); color:rgba(125,141,178,.8); cursor:not-allowed; }
+  .bouton:hover{ filter:brightness(1.07); }
+  .bouton:disabled{ background:rgba(255,255,255,.10); color:rgba(169,182,220,.8); cursor:not-allowed; }
   .bouton-2{
     width:100%; border-radius:12px; padding:13px 18px;
     font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:16px;
     letter-spacing:.08em; text-transform:uppercase;
-    background:transparent; color:var(--craie);
-    border:1px solid rgba(255,255,255,.18); cursor:pointer;
+    background:transparent; color:var(--blanc);
+    border:1px solid rgba(255,255,255,.2); cursor:pointer;
   }
 
   /* --- Voile / notifications --- */
   .voile{
     position:fixed; inset:0; z-index:60; display:none;
-    background:rgba(6,14,32,.82); backdrop-filter:blur(6px);
+    background:rgba(10,17,58,.85); backdrop-filter:blur(6px);
     align-items:flex-end; justify-content:center; padding:16px;
   }
   .voile.on{ display:flex; }
@@ -182,18 +197,16 @@ tailwind.config = {
   #toast{
     position:fixed; left:50%; bottom:96px; transform:translateX(-50%) translateY(12px);
     z-index:70; max-width:calc(100% - 32px);
-    background:#1B2C55; border:1px solid rgba(255,255,255,.14); color:var(--craie);
+    background:#233070; border:1px solid rgba(255,255,255,.16); color:var(--blanc);
     border-radius:12px; padding:11px 16px; font-size:14px; font-weight:500;
     opacity:0; pointer-events:none; transition:opacity .2s, transform .2s;
   }
   #toast.on{ opacity:1; transform:translateX(-50%) translateY(0); }
 
   ::-webkit-scrollbar{ width:8px; }
-  ::-webkit-scrollbar-thumb{ background:rgba(125,141,178,.35); border-radius:8px; }
+  ::-webkit-scrollbar-thumb{ background:rgba(169,182,220,.35); border-radius:8px; }
 
-  @media (prefers-reduced-motion:reduce){
-    *{ animation:none !important; transition:none !important; }
-  }
+  @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
 </style>
 </head>
 
@@ -201,45 +214,59 @@ tailwind.config = {
 
 <!-- ══════════════ EN-TÊTE ══════════════ -->
 <header class="max-w-xl mx-auto px-5 pt-8 pb-5 text-center">
-  <img id="blason" src="" alt="" class="h-16 mx-auto mb-4 hidden">
-  <p class="font-cond text-[11px] tracking-[.35em] uppercase text-acier">Lykos Futsal Club</p>
+  <img id="blason" src="" alt="Lykos Futsal Club" class="h-20 mx-auto mb-4 hidden">
+  <p class="font-cond text-[11px] tracking-[.35em] uppercase text-brume">Lykos Futsal Club</p>
   <h1 id="titre" class="font-anton text-4xl uppercase leading-none mt-1">Ton maillot</h1>
-  <p id="accroche" class="text-sm text-acier mt-3 max-w-sm mx-auto">Chargement…</p>
+  <p id="accroche" class="text-sm text-brume mt-3 max-w-sm mx-auto">Chargement…</p>
   <div class="mt-4 flex items-center justify-center gap-2 flex-wrap">
-    <span id="pill-saison" class="font-cond text-[12px] tracking-[.14em] uppercase px-3 py-1 rounded-full border border-white/15 text-craie">Saison —</span>
-    <span id="pill-limite" class="font-cond text-[12px] tracking-[.14em] uppercase px-3 py-1 rounded-full border border-or/40 text-or hidden"></span>
+    <span id="pill-saison" class="font-cond text-[12px] tracking-[.14em] uppercase px-3 py-1 rounded-full border border-white/20">Saison —</span>
+    <span id="pill-limite" class="font-cond text-[12px] tracking-[.14em] uppercase px-3 py-1 rounded-full border border-or/50 text-or hidden"></span>
   </div>
 </header>
 
-<!-- ══════════════ MAILLOT (aperçu direct) ══════════════ -->
+<!-- ══════════════ MAILLOT ══════════════ -->
 <section class="max-w-xl mx-auto px-5">
   <div class="carte py-5 px-4 flex flex-col items-center">
-    <svg viewBox="0 0 300 340" class="w-[190px] h-auto" role="img" aria-label="Aperçu du maillot">
+    <svg viewBox="0 0 300 350" class="w-[200px] h-auto" role="img" aria-label="Aperçu du maillot">
       <defs>
-        <linearGradient id="tissu" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"  stop-color="var(--maillot-1)"/>
-          <stop offset="100%" stop-color="var(--maillot-2)"/>
-        </linearGradient>
+        <clipPath id="coupeMaillot">
+          <path d="M96 20 L58 40 L16 78 L54 124 L80 104 L80 320 Q150 334 220 320 L220 104 L246 124 L284 78 L242 40 L204 20 Q150 56 96 20 Z"/>
+        </clipPath>
       </defs>
-      <path d="M96 18 L58 38 L16 76 L54 122 L80 102 L80 318 Q150 332 220 318 L220 102 L246 122 L284 76 L242 38 L204 18 Q150 54 96 18 Z"
-            fill="url(#tissu)" stroke="rgba(255,255,255,.22)" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M96 18 Q150 54 204 18 L192 12 Q150 42 108 12 Z" fill="rgba(255,255,255,.9)"/>
-      <text id="floc-maillot" x="150" y="112" text-anchor="middle"
-            font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26"
-            letter-spacing="3" fill="var(--maillot-txt)" opacity=".95"></text>
-      <text id="num-maillot" x="150" y="248" text-anchor="middle"
-            font-family="Anton, sans-serif" font-size="132" fill="var(--maillot-txt)">?</text>
+
+      <!-- Rayures verticales, panneau blanc central pour le numéro -->
+      <g clip-path="url(#coupeMaillot)">
+        <rect x="0" y="0" width="300" height="350" fill="var(--maillot-2)"/>
+        <rect x="-4"  y="0" width="44" height="350" fill="var(--maillot-1)"/>
+        <rect x="84"  y="0" width="44" height="350" fill="var(--maillot-1)"/>
+        <rect x="172" y="0" width="44" height="350" fill="var(--maillot-1)"/>
+        <rect x="260" y="0" width="44" height="350" fill="var(--maillot-1)"/>
+      </g>
+
+      <!-- Col blanc liseré bleu -->
+      <path d="M96 20 Q150 56 204 20 L214 27 Q150 68 86 27 Z"
+            fill="var(--maillot-2)" stroke="var(--maillot-1)" stroke-width="3" stroke-linejoin="round"/>
+
+      <!-- Contour -->
+      <path d="M96 20 L58 40 L16 78 L54 124 L80 104 L80 320 Q150 334 220 320 L220 104 L246 124 L284 78 L242 40 L204 20 Q150 56 96 20 Z"
+            fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2.5" stroke-linejoin="round"/>
+
+      <text id="floc-maillot" x="150" y="118" text-anchor="middle"
+            font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="24"
+            letter-spacing="2.5" fill="var(--maillot-txt)"></text>
+      <text id="num-maillot" x="150" y="256" text-anchor="middle"
+            font-family="Anton, sans-serif" font-size="130" fill="var(--maillot-txt)">?</text>
     </svg>
-    <p id="compteur" class="font-cond text-[13px] tracking-[.14em] uppercase text-acier mt-1">—</p>
+    <p id="compteur" class="font-cond text-[13px] tracking-[.14em] uppercase text-brume mt-1">—</p>
   </div>
 </section>
 
 <!-- ══════════════ RÉSERVATION DÉJÀ FAITE ══════════════ -->
 <section id="deja" class="max-w-xl mx-auto px-5 mt-4 hidden">
-  <div class="carte p-4 border-or/40 bg-or/5">
+  <div class="carte p-4 border-or/50 bg-or/10">
     <p class="font-cond text-[13px] tracking-[.14em] uppercase text-or">Déjà réservé</p>
     <p id="deja-txt" class="text-sm mt-1"></p>
-    <button onclick="oublierReservation()" class="mt-3 text-xs text-acier underline underline-offset-2">Ce n'est pas moi, réinitialiser</button>
+    <button onclick="oublierReservation()" class="mt-3 text-xs text-brume underline underline-offset-2">Ce n'est pas moi, réinitialiser</button>
   </div>
 </section>
 
@@ -260,13 +287,9 @@ tailwind.config = {
       </div>
     </div>
     <div class="mt-3">
-      <label class="label" for="f-flocage">Flocage — ce qui sera imprimé dans le dos</label>
+      <label class="label" for="f-flocage">Flocage</label>
       <input id="f-flocage" class="champ uppercase tracking-wide" type="text" maxlength="12" placeholder="PERALS">
       <div id="suggestions" class="flex flex-wrap gap-2 mt-2"></div>
-    </div>
-    <div class="mt-3">
-      <label class="label" for="f-email">E-mail <span class="normal-case tracking-normal text-acier/70">(facultatif)</span></label>
-      <input id="f-email" class="champ" type="email" autocomplete="email" placeholder="pour recevoir la confirmation">
     </div>
   </section>
 
@@ -291,14 +314,18 @@ tailwind.config = {
       <label class="label">Pointure</label>
       <div id="pointures" class="grid grid-cols-6 gap-2"></div>
     </div>
-    <p id="note-loisirs" class="text-xs text-acier mt-3 hidden">Formule loisirs : ni short ni chaussettes, on ne te demande que le haut.</p>
+    <p id="note-loisirs" class="text-xs text-brume mt-3 hidden">Formule loisir : ni short ni chaussettes, on ne te demande que le haut.</p>
   </section>
 
   <!-- 4. Numéro -->
   <section class="carte p-4">
     <p class="etape"><span>4</span>Ton numéro</p>
+    <div class="legende">
+      <span><i style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35)"></i>Libre</span>
+      <span><i style="background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1)"></i>Pris</span>
+    </div>
     <div id="grille" aria-label="Numéros de maillot"></div>
-    <p class="text-xs text-acier mt-3">Les numéros grisés sont déjà pris. Premier arrivé, premier servi.</p>
+    <p class="text-xs text-brume mt-3">Premier arrivé, premier servi.</p>
   </section>
 
 </main>
@@ -307,7 +334,7 @@ tailwind.config = {
 <section id="ferme" class="max-w-xl mx-auto px-5 mt-5 hidden">
   <div class="carte p-5 text-center">
     <p class="font-cond text-[13px] tracking-[.14em] uppercase text-or">Réservations closes</p>
-    <p id="ferme-txt" class="text-sm text-acier mt-2"></p>
+    <p id="ferme-txt" class="text-sm text-brume mt-2"></p>
   </div>
 </section>
 
@@ -320,9 +347,9 @@ tailwind.config = {
 
 <!-- ══════════════ RÉCAPITULATIF ══════════════ -->
 <div id="voile-recap" class="voile" role="dialog" aria-modal="true" aria-labelledby="recap-titre">
-  <div class="carte w-full max-w-md p-5 bg-ardoise">
+  <div class="carte w-full max-w-md p-5 bg-marine2">
     <p id="recap-titre" class="font-anton text-2xl uppercase">On valide ?</p>
-    <p class="text-sm text-acier mt-1">Un numéro réservé ne se change pas tout seul. Vérifie avant d'envoyer.</p>
+    <p class="text-sm text-brume mt-1">Un numéro réservé ne se change pas tout seul. Vérifie avant d'envoyer.</p>
     <dl id="recap-liste" class="mt-4 space-y-2 text-sm"></dl>
     <div class="mt-5 space-y-2">
       <button id="btn-confirmer" class="bouton" onclick="envoyer()">Réserver ce numéro</button>
@@ -334,10 +361,10 @@ tailwind.config = {
 
 <!-- ══════════════ CONFIRMATION ══════════════ -->
 <div id="voile-ok" class="voile" role="dialog" aria-modal="true">
-  <div class="carte w-full max-w-md p-6 bg-ardoise text-center">
+  <div class="carte w-full max-w-md p-6 bg-marine2 text-center">
     <p class="font-cond text-[13px] tracking-[.2em] uppercase text-or">C'est verrouillé</p>
     <p id="ok-titre" class="font-anton text-4xl uppercase leading-none mt-2"></p>
-    <p id="ok-sous" class="text-sm text-acier mt-2"></p>
+    <p id="ok-sous" class="text-sm text-brume mt-2"></p>
     <p id="ok-fin" class="text-sm mt-4"></p>
     <button class="bouton mt-5" onclick="location.reload()">Retour aux numéros</button>
   </div>
@@ -346,14 +373,14 @@ tailwind.config = {
 <div id="toast" role="status" aria-live="polite"></div>
 
 <footer class="max-w-xl mx-auto px-5 pt-8 pb-4 text-center">
-  <p class="font-cond text-[11px] tracking-[.2em] uppercase text-acier/60">Lykos Futsal Club — depuis 2019</p>
+  <p class="font-cond text-[11px] tracking-[.2em] uppercase text-brume/60">Lykos Futsal Club — depuis 2019</p>
 </footer>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════════
    CONFIGURATION — une seule ligne à modifier si tu redéploies
    ═══════════════════════════════════════════════════════════════════ */
-const EXEC_URL = 'https://script.google.com/macros/s/AKfycbxiKV0Xi_NOe42hlS4xLxHT0MW-miZ50JUfaGMUvXttp4TXMC_qLLGdVrFTab7nVu78/exec';
+const EXEC_URL = 'https://script.google.com/macros/s/AKfycbxPFiiC0sRPmD3BU17SBl8_D1J2DmSKHF6ZmlXu3OBzsLKhJy7ZQFT_lYolDC0MnhLY/exec';
 const API_URL  = EXEC_URL + '?api=1';
 const POST_URL = EXEC_URL;
 const CLE_CACHE  = 'lykosEtatCache';
@@ -362,7 +389,7 @@ const CLE_RESERV = 'lykosMaReservation';
 /* ═══════════════════════════════════════════════════════════════════
    ÉTAT
    ═══════════════════════════════════════════════════════════════════ */
-let D = null;                      // données serveur
+let D = null;
 let choix = { formule:'', tailleHaut:'', tailleBas:'', pointure:'', numero:null };
 let envoiEnCours = false;
 let reqId = null;
@@ -417,7 +444,6 @@ function appliquer(data, horsLigne) {
   const premier = !D;
   D = data;
 
-  // Couleurs du maillot pilotées par l'onglet Config
   const c = data.couleurs || {};
   const rs = document.documentElement.style;
   if (c.primaire)   rs.setProperty('--maillot-1', c.primaire);
@@ -431,9 +457,12 @@ function appliquer(data, horsLigne) {
   const limite = document.getElementById('pill-limite');
   if (data.dateLimite) { limite.textContent = 'Jusqu\'au ' + data.dateLimite; limite.classList.remove('hidden'); }
 
-  if (data.logo) {
-    const b = document.getElementById('blason');
-    b.src = data.logo; b.alt = 'Blason Lykos Futsal Club'; b.classList.remove('hidden');
+  // Blason : URL de Config, sinon logo.png déposé à la racine du repo
+  const b = document.getElementById('blason');
+  if (!b.getAttribute('src')) {
+    b.onload  = () => b.classList.remove('hidden');
+    b.onerror = () => b.classList.add('hidden');
+    b.setAttribute('src', data.logo || 'logo.png');
   }
 
   if (premier) { rendreFormules(); rendreTailles(); rendreSuggestions(); }
@@ -454,11 +483,22 @@ function rendreFormules() {
   const zone = document.getElementById('formules');
   zone.innerHTML = '';
   (D.formules || []).forEach(f => {
+    const nom    = typeof f === 'string' ? f : (f.nom || '');
+    const prix   = typeof f === 'string' ? '' : (f.prix || '');
+    const detail = typeof f === 'string' ? '' : (f.detail || '');
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'formule'; b.setAttribute('aria-pressed', 'false');
-    b.innerHTML = '<span class="coche"></span><span class="font-cond text-[17px] tracking-wide">' + echapper(f) + '</span>';
+    b.innerHTML =
+      '<span class="coche"></span>' +
+      '<span class="flex-1 min-w-0">' +
+        '<span class="flex items-baseline justify-between gap-3">' +
+          '<span class="font-cond text-[19px] tracking-wide uppercase">' + echapper(nom) + '</span>' +
+          (prix ? '<span class="font-cond text-[18px] text-or whitespace-nowrap">' + echapper(prix) + '</span>' : '') +
+        '</span>' +
+        (detail ? '<span class="block text-[12px] text-brume mt-1 leading-snug">' + echapper(detail) + '</span>' : '') +
+      '</span>';
     b.onclick = () => {
-      choix.formule = f;
+      choix.formule = nom;
       [...zone.children].forEach(el => el.setAttribute('aria-pressed', el === b ? 'true' : 'false'));
       majBlocsTailles(); verifier();
     };
@@ -504,12 +544,12 @@ function rendreSuggestions() {
     zone.innerHTML = '';
     const props = [];
     if (n) props.push(n.toUpperCase());
-    if (p) props.push(p);
+    if (p) props.push(p.toUpperCase());
     if (p && n) props.push((p + ' ' + n).toUpperCase().slice(0, 12));
     [...new Set(props)].filter(Boolean).forEach(s => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'font-cond text-[13px] tracking-wide px-2.5 py-1 rounded-md border border-white/15 text-acier hover:border-azur hover:text-craie';
+      b.className = 'font-cond text-[13px] tracking-wide px-2.5 py-1 rounded-md border border-white/20 text-brume hover:border-or hover:text-white';
       b.textContent = s;
       b.onclick = () => { document.getElementById('f-flocage').value = s; majMaillot(); verifier(); };
       zone.appendChild(b);
@@ -517,7 +557,6 @@ function rendreSuggestions() {
   };
   ['f-prenom', 'f-nom'].forEach(id => document.getElementById(id).addEventListener('input', () => { maj(); verifier(); }));
   document.getElementById('f-flocage').addEventListener('input', () => { majMaillot(); verifier(); });
-  document.getElementById('f-email').addEventListener('input', verifier);
 }
 
 function rendreGrille() {
@@ -528,7 +567,9 @@ function rendreGrille() {
     b.type = 'button';
     b.className = 'plaque' + (x.pris ? ' pris' : '') + (choix.numero === x.n ? ' choisi' : '');
     b.setAttribute('aria-pressed', choix.numero === x.n ? 'true' : 'false');
-    b.setAttribute('aria-label', x.pris ? ('Numéro ' + x.n + ', pris par ' + (x.flocage || 'un joueur')) : ('Numéro ' + x.n + ', libre'));
+    b.setAttribute('aria-label', x.pris
+      ? ('Numéro ' + x.n + ', pris par ' + (x.flocage || 'un joueur'))
+      : ('Numéro ' + x.n + ', libre'));
     b.innerHTML = '<span>' + x.n + '</span>' +
       (x.pris && x.flocage ? '<span class="flocage">' + echapper(x.flocage) + '</span>' : '');
     b.onclick = () => {
@@ -554,7 +595,7 @@ function majCompteur() {
 }
 
 function majMaillot() {
-  const num = document.getElementById('num-maillot');
+  const num  = document.getElementById('num-maillot');
   const floc = document.getElementById('floc-maillot');
   const nouveau = choix.numero === null ? '?' : String(choix.numero);
   if (num.textContent !== nouveau) {
@@ -568,16 +609,14 @@ function majMaillot() {
    VALIDATION
    ═══════════════════════════════════════════════════════════════════ */
 function manque() {
-  if (val('f-prenom').length < 2) return 'Écris ton prénom';
-  if (val('f-nom').length    < 2) return 'Écris ton nom';
+  if (val('f-prenom').length < 2)  return 'Écris ton prénom';
+  if (val('f-nom').length    < 2)  return 'Écris ton nom';
   if (val('f-flocage').length < 1) return 'Choisis ton flocage';
-  if (!choix.formule)             return 'Choisis ta formule';
-  if (!choix.tailleHaut)          return 'Choisis ta taille de haut';
+  if (!choix.formule)              return 'Choisis ta formule';
+  if (!choix.tailleHaut)           return 'Choisis ta taille de haut';
   if (!sansBas() && !choix.tailleBas) return 'Choisis ta taille de bas';
   if (!sansBas() && !choix.pointure)  return 'Choisis ta pointure';
-  if (choix.numero === null)      return 'Choisis un numéro';
-  const mail = val('f-email');
-  if (mail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) return 'Vérifie ton adresse e-mail';
+  if (choix.numero === null)       return 'Choisis un numéro';
   return null;
 }
 
@@ -594,18 +633,17 @@ function verifier() {
 function ouvrirRecap() {
   if (manque()) return;
   const lignes = [
-    ['Numéro',   String(choix.numero)],
-    ['Flocage',  val('f-flocage').toUpperCase()],
-    ['Joueur',   val('f-prenom') + ' ' + val('f-nom')],
-    ['Formule',  choix.formule],
-    ['Haut',     choix.tailleHaut]
+    ['Numéro',  String(choix.numero)],
+    ['Flocage', val('f-flocage').toUpperCase()],
+    ['Joueur',  val('f-prenom') + ' ' + val('f-nom')],
+    ['Formule', choix.formule],
+    ['Haut',    choix.tailleHaut]
   ];
   if (!sansBas()) { lignes.push(['Bas', choix.tailleBas], ['Pointure', choix.pointure]); }
-  if (val('f-email')) lignes.push(['E-mail', val('f-email')]);
 
   document.getElementById('recap-liste').innerHTML = lignes.map(l =>
-    '<div class="flex justify-between gap-4 border-b border-white/8 pb-1.5">' +
-    '<dt class="font-cond text-[13px] tracking-[.1em] uppercase text-acier">' + echapper(l[0]) + '</dt>' +
+    '<div class="flex justify-between gap-4 border-b border-white/10 pb-1.5">' +
+    '<dt class="font-cond text-[13px] tracking-[.1em] uppercase text-brume">' + echapper(l[0]) + '</dt>' +
     '<dd class="text-right font-semibold">' + echapper(l[1]) + '</dd></div>'
   ).join('');
 
@@ -629,7 +667,6 @@ function envoyer() {
     prenom     : val('f-prenom'),
     nom        : val('f-nom'),
     flocage    : val('f-flocage').toUpperCase(),
-    email      : val('f-email'),
     formule    : choix.formule,
     tailleHaut : choix.tailleHaut,
     tailleBas  : sansBas() ? 'N/A' : choix.tailleBas,
@@ -637,9 +674,7 @@ function envoyer() {
   })
   .then(r => {
     if (r && r.ok) {
-      localStorage.setItem(CLE_RESERV, JSON.stringify({
-        saison: D.saison, numero: r.numero, flocage: r.flocage
-      }));
+      localStorage.setItem(CLE_RESERV, JSON.stringify({ saison: D.saison, numero: r.numero, flocage: r.flocage }));
       succes(r);
     } else {
       erreurRecap((r && r.message) || 'La réservation n\'a pas abouti.');
@@ -714,10 +749,8 @@ const cacheInitial = localStorage.getItem(CLE_CACHE);
 if (cacheInitial) { try { appliquer(JSON.parse(cacheInitial), true); } catch (e) {} }
 charger(false).then(verifier);
 
-// Rafraîchissement discret de la grille : deux joueurs peuvent viser le même numéro
 setInterval(() => { if (!envoiEnCours && document.visibilityState === 'visible') charger(true); }, 30000);
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') charger(true); });
-
 document.addEventListener('keydown', e => { if (e.key === 'Escape') fermerRecap(); });
 </script>
 </body>
