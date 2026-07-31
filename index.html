@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0A1730">
+<title>Lykos Futsal Club — Ton maillot</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        nuit:    '#0A1730',
+        ardoise: '#101F42',
+        bleu:    '#17439B',
+        azur:    '#4C8DFF',
+        craie:   '#EEF3FC',
+        acier:   '#7D8DB2',
+        or:      '#F5C451'
+      },
+      fontFamily: {
+        anton: ['Anton', 'sans-serif'],
+        cond:  ['"Barlow Condensed"', 'sans-serif'],
+        body:  ['Barlow', 'sans-serif']
+      }
+    }
+  }
+};
+</script>
+
+<style>
+  :root{
+    --nuit:#0A1730; --ardoise:#101F42; --bleu:#17439B; --azur:#4C8DFF;
+    --craie:#EEF3FC; --acier:#7D8DB2; --or:#F5C451;
+    --maillot-1:#17439B; --maillot-2:#0A1730; --maillot-txt:#FFFFFF;
+  }
+  html,body{ height:100%; }
+  body{
+    background:
+      radial-gradient(900px 520px at 50% -8%, rgba(23,67,155,.55), transparent 65%),
+      var(--nuit);
+    color:var(--craie);
+    font-family:'Barlow',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* --- Blocs --- */
+  .carte{
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;
+  }
+  .etape{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600; font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--acier); display:flex; align-items:center; gap:10px; margin-bottom:12px;
+  }
+  .etape span{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; border-radius:6px; letter-spacing:0;
+    background:rgba(76,141,255,.16); color:var(--azur); font-size:12px;
+  }
+  .etape::after{ content:''; flex:1; height:1px; background:rgba(255,255,255,.08); }
+
+  /* --- Champs --- */
+  .champ{
+    width:100%; background:rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.12); border-radius:10px;
+    padding:11px 13px; color:var(--craie); font-size:15px; outline:none;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .champ::placeholder{ color:rgba(125,141,178,.7); }
+  .champ:focus-visible{ border-color:var(--azur); box-shadow:0 0 0 3px rgba(76,141,255,.2); }
+  .label{
+    font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--acier);
+    display:block; margin-bottom:6px;
+  }
+
+  /* --- Choix (formules + tailles) --- */
+  .puce{
+    font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:16px;
+    letter-spacing:.04em; padding:9px 0; min-width:52px; text-align:center;
+    background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.12);
+    border-radius:10px; color:var(--craie); cursor:pointer;
+    transition:transform .12s, background .15s, border-color .15s, color .15s;
+  }
+  .puce:hover{ border-color:rgba(76,141,255,.6); }
+  .puce[aria-pressed="true"]{
+    background:var(--azur); border-color:var(--azur); color:#06122B; font-weight:700;
+  }
+  .formule{
+    display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+    background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.12);
+    border-radius:12px; padding:13px 14px; color:var(--craie); cursor:pointer;
+    transition:background .15s, border-color .15s;
+  }
+  .formule:hover{ border-color:rgba(76,141,255,.6); }
+  .formule[aria-pressed="true"]{ border-color:var(--azur); background:rgba(76,141,255,.12); }
+  .formule .coche{
+    width:20px; height:20px; border-radius:50%; flex:none;
+    border:2px solid rgba(255,255,255,.25); position:relative;
+  }
+  .formule[aria-pressed="true"] .coche{ border-color:var(--azur); }
+  .formule[aria-pressed="true"] .coche::after{
+    content:''; position:absolute; inset:3px; border-radius:50%; background:var(--azur);
+  }
+
+  /* --- Tableau des numéros --- */
+  #grille{ display:grid; grid-template-columns:repeat(auto-fill,minmax(60px,1fr)); gap:8px; }
+  .plaque{
+    position:relative; aspect-ratio:1/1; border-radius:12px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
+    font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:24px;
+    color:var(--craie); cursor:pointer; overflow:hidden;
+    transition:transform .12s, background .15s, border-color .15s, color .15s;
+  }
+  .plaque:hover{ border-color:var(--azur); transform:translateY(-2px); }
+  .plaque .flocage{
+    font-family:'Barlow',sans-serif; font-weight:600; font-size:9px;
+    letter-spacing:.04em; text-transform:uppercase; line-height:1;
+    max-width:92%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    margin-top:2px;
+  }
+  .plaque.pris{
+    background:rgba(255,255,255,.02); border-color:rgba(255,255,255,.05);
+    color:rgba(125,141,178,.75); cursor:not-allowed;
+  }
+  .plaque.pris:hover{ transform:none; border-color:rgba(255,255,255,.05); }
+  .plaque.pris .flocage{ color:rgba(125,141,178,.85); }
+  .plaque.choisi{
+    background:var(--or); border-color:var(--or); color:#06122B;
+    transform:translateY(-2px); box-shadow:0 8px 22px -8px rgba(245,196,81,.7);
+  }
+  .plaque:focus-visible{ outline:2px solid var(--azur); outline-offset:2px; }
+
+  /* --- Maillot --- */
+  #num-maillot{ transition:opacity .18s; }
+  .pop{ animation:pop .28s ease-out; }
+  @keyframes pop{ 0%{transform:scale(.82);opacity:.4} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
+  .secoue{ animation:secoue .34s; }
+  @keyframes secoue{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+  /* --- Barre d'action --- */
+  #barre{
+    position:fixed; left:0; right:0; bottom:0; z-index:40;
+    background:linear-gradient(to top, rgba(10,23,48,.98) 65%, rgba(10,23,48,0));
+    padding:14px 16px calc(16px + env(safe-area-inset-bottom));
+  }
+  .bouton{
+    width:100%; border-radius:12px; padding:15px 18px;
+    font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:19px;
+    letter-spacing:.08em; text-transform:uppercase;
+    background:var(--or); color:#06122B; border:none; cursor:pointer;
+    transition:filter .15s, opacity .15s;
+  }
+  .bouton:hover{ filter:brightness(1.06); }
+  .bouton:disabled{ background:rgba(255,255,255,.09); color:rgba(125,141,178,.8); cursor:not-allowed; }
+  .bouton-2{
+    width:100%; border-radius:12px; padding:13px 18px;
+    font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:16px;
+    letter-spacing:.08em; text-transform:uppercase;
+    background:transparent; color:var(--craie);
+    border:1px solid rgba(255,255,255,.18); cursor:pointer;
+  }
+
+  /* --- Voile / notifications --- */
+  .voile{
+    position:fixed; inset:0; z-index:60; display:none;
+    background:rgba(6,14,32,.82); backdrop-filter:blur(6px);
+    align-items:flex-end; justify-content:center; padding:16px;
+  }
+  .voile.on{ display:flex; }
+  @media (min-width:640px){ .voile{ align-items:center; } }
+  #toast{
+    position:fixed; left:50%; bottom:96px; transform:translateX(-50%) translateY(12px);
+    z-index:70; max-width:calc(100% - 32px);
+    background:#1B2C55; border:1px solid rgba(255,255,255,.14); color:var(--craie);
+    border-radius:12px; padding:11px 16px; font-size:14px; font-weight:500;
+    opacity:0; pointer-events:none; transition:opacity .2s, transform .2s;
+  }
+  #toast.on{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  ::-webkit-scrollbar{ width:8px; }
+  ::-webkit-scrollbar-thumb{ background:rgba(125,141,178,.35); border-radius:8px; }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+
+<body class="font-body pb-28">
+
+<!-- ══════════════ EN-TÊTE ══════════════ -->
+<header class="max-w-xl mx-auto px-5 pt-8 pb-5 text-center">
+  <img id="blason" src="" alt="" class="h-16 mx-auto mb-4 hidden">
+  <p class="font-cond text-[11px] tracking-[.35em] uppercase text-acier">Lykos Futsal Club</p>
+  <h1 id="titre" class="font-anton text-4xl uppercase leading-none mt-1">Ton maillot</h1>
+  <p id="accroche" class="text-sm text-acier mt-3 max-w-sm mx-auto">Chargement…</p>
+  <div class="mt-4 flex items-center justify-center gap-2 flex-wrap">
+    <span id="pill-saison" class="font-cond text-[12px] tracking-[.14em] uppercase px-3 py-1 rounded-full border border-white/15 text-craie">Saison —</span>
+    <span id="pill-limite" class="font-cond text-[12px] tracking-[.14em] uppercase px-3 py-1 rounded-full border border-or/40 text-or hidden"></span>
+  </div>
+</header>
+
+<!-- ══════════════ MAILLOT (aperçu direct) ══════════════ -->
+<section class="max-w-xl mx-auto px-5">
+  <div class="carte py-5 px-4 flex flex-col items-center">
+    <svg viewBox="0 0 300 340" class="w-[190px] h-auto" role="img" aria-label="Aperçu du maillot">
+      <defs>
+        <linearGradient id="tissu" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"  stop-color="var(--maillot-1)"/>
+          <stop offset="100%" stop-color="var(--maillot-2)"/>
+        </linearGradient>
+      </defs>
+      <path d="M96 18 L58 38 L16 76 L54 122 L80 102 L80 318 Q150 332 220 318 L220 102 L246 122 L284 76 L242 38 L204 18 Q150 54 96 18 Z"
+            fill="url(#tissu)" stroke="rgba(255,255,255,.22)" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M96 18 Q150 54 204 18 L192 12 Q150 42 108 12 Z" fill="rgba(255,255,255,.9)"/>
+      <text id="floc-maillot" x="150" y="112" text-anchor="middle"
+            font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26"
+            letter-spacing="3" fill="var(--maillot-txt)" opacity=".95"></text>
+      <text id="num-maillot" x="150" y="248" text-anchor="middle"
+            font-family="Anton, sans-serif" font-size="132" fill="var(--maillot-txt)">?</text>
+    </svg>
+    <p id="compteur" class="font-cond text-[13px] tracking-[.14em] uppercase text-acier mt-1">—</p>
+  </div>
+</section>
+
+<!-- ══════════════ RÉSERVATION DÉJÀ FAITE ══════════════ -->
+<section id="deja" class="max-w-xl mx-auto px-5 mt-4 hidden">
+  <div class="carte p-4 border-or/40 bg-or/5">
+    <p class="font-cond text-[13px] tracking-[.14em] uppercase text-or">Déjà réservé</p>
+    <p id="deja-txt" class="text-sm mt-1"></p>
+    <button onclick="oublierReservation()" class="mt-3 text-xs text-acier underline underline-offset-2">Ce n'est pas moi, réinitialiser</button>
+  </div>
+</section>
+
+<!-- ══════════════ FORMULAIRE ══════════════ -->
+<main id="formulaire" class="max-w-xl mx-auto px-5 mt-5 space-y-5">
+
+  <!-- 1. Identité -->
+  <section class="carte p-4">
+    <p class="etape"><span>1</span>Qui es-tu</p>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="label" for="f-prenom">Prénom</label>
+        <input id="f-prenom" class="champ" type="text" autocomplete="given-name" placeholder="Gabriel">
+      </div>
+      <div>
+        <label class="label" for="f-nom">Nom</label>
+        <input id="f-nom" class="champ" type="text" autocomplete="family-name" placeholder="Perals">
+      </div>
+    </div>
+    <div class="mt-3">
+      <label class="label" for="f-flocage">Flocage — ce qui sera imprimé dans le dos</label>
+      <input id="f-flocage" class="champ uppercase tracking-wide" type="text" maxlength="12" placeholder="PERALS">
+      <div id="suggestions" class="flex flex-wrap gap-2 mt-2"></div>
+    </div>
+    <div class="mt-3">
+      <label class="label" for="f-email">E-mail <span class="normal-case tracking-normal text-acier/70">(facultatif)</span></label>
+      <input id="f-email" class="champ" type="email" autocomplete="email" placeholder="pour recevoir la confirmation">
+    </div>
+  </section>
+
+  <!-- 2. Formule -->
+  <section class="carte p-4">
+    <p class="etape"><span>2</span>Ta formule</p>
+    <div id="formules" class="space-y-2"></div>
+  </section>
+
+  <!-- 3. Tailles -->
+  <section class="carte p-4">
+    <p class="etape"><span>3</span>Tes tailles</p>
+    <div>
+      <label class="label">Haut</label>
+      <div id="tailles-haut" class="grid grid-cols-6 gap-2"></div>
+    </div>
+    <div id="bloc-bas" class="mt-4">
+      <label class="label">Bas</label>
+      <div id="tailles-bas" class="grid grid-cols-6 gap-2"></div>
+    </div>
+    <div id="bloc-pointure" class="mt-4">
+      <label class="label">Pointure</label>
+      <div id="pointures" class="grid grid-cols-6 gap-2"></div>
+    </div>
+    <p id="note-loisirs" class="text-xs text-acier mt-3 hidden">Formule loisirs : ni short ni chaussettes, on ne te demande que le haut.</p>
+  </section>
+
+  <!-- 4. Numéro -->
+  <section class="carte p-4">
+    <p class="etape"><span>4</span>Ton numéro</p>
+    <div id="grille" aria-label="Numéros de maillot"></div>
+    <p class="text-xs text-acier mt-3">Les numéros grisés sont déjà pris. Premier arrivé, premier servi.</p>
+  </section>
+
+</main>
+
+<!-- ══════════════ FERMÉ ══════════════ -->
+<section id="ferme" class="max-w-xl mx-auto px-5 mt-5 hidden">
+  <div class="carte p-5 text-center">
+    <p class="font-cond text-[13px] tracking-[.14em] uppercase text-or">Réservations closes</p>
+    <p id="ferme-txt" class="text-sm text-acier mt-2"></p>
+  </div>
+</section>
+
+<!-- ══════════════ BARRE D'ACTION ══════════════ -->
+<div id="barre">
+  <div class="max-w-xl mx-auto">
+    <button id="btn-reserver" class="bouton" disabled onclick="ouvrirRecap()">Choisis un numéro</button>
+  </div>
+</div>
+
+<!-- ══════════════ RÉCAPITULATIF ══════════════ -->
+<div id="voile-recap" class="voile" role="dialog" aria-modal="true" aria-labelledby="recap-titre">
+  <div class="carte w-full max-w-md p-5 bg-ardoise">
+    <p id="recap-titre" class="font-anton text-2xl uppercase">On valide ?</p>
+    <p class="text-sm text-acier mt-1">Un numéro réservé ne se change pas tout seul. Vérifie avant d'envoyer.</p>
+    <dl id="recap-liste" class="mt-4 space-y-2 text-sm"></dl>
+    <div class="mt-5 space-y-2">
+      <button id="btn-confirmer" class="bouton" onclick="envoyer()">Réserver ce numéro</button>
+      <button class="bouton-2" onclick="fermerRecap()">Modifier</button>
+    </div>
+    <p id="recap-erreur" class="text-sm text-or mt-3 hidden"></p>
+  </div>
+</div>
+
+<!-- ══════════════ CONFIRMATION ══════════════ -->
+<div id="voile-ok" class="voile" role="dialog" aria-modal="true">
+  <div class="carte w-full max-w-md p-6 bg-ardoise text-center">
+    <p class="font-cond text-[13px] tracking-[.2em] uppercase text-or">C'est verrouillé</p>
+    <p id="ok-titre" class="font-anton text-4xl uppercase leading-none mt-2"></p>
+    <p id="ok-sous" class="text-sm text-acier mt-2"></p>
+    <p id="ok-fin" class="text-sm mt-4"></p>
+    <button class="bouton mt-5" onclick="location.reload()">Retour aux numéros</button>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<footer class="max-w-xl mx-auto px-5 pt-8 pb-4 text-center">
+  <p class="font-cond text-[11px] tracking-[.2em] uppercase text-acier/60">Lykos Futsal Club — depuis 2019</p>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   CONFIGURATION — une seule ligne à modifier si tu redéploies
+   ═══════════════════════════════════════════════════════════════════ */
+const EXEC_URL = 'https://script.google.com/macros/s/AKfycbxPFiiC0sRPmD3BU17SBl8_D1J2DmSKHF6ZmlXu3OBzsLKhJy7ZQFT_lYolDC0MnhLY/exec';
+const API_URL  = EXEC_URL + '?api=1';
+const POST_URL = EXEC_URL;
+const CLE_CACHE  = 'lykosEtatCache';
+const CLE_RESERV = 'lykosMaReservation';
+
+/* ═══════════════════════════════════════════════════════════════════
+   ÉTAT
+   ═══════════════════════════════════════════════════════════════════ */
+let D = null;                      // données serveur
+let choix = { formule:'', tailleHaut:'', tailleBas:'', pointure:'', numero:null };
+let envoiEnCours = false;
+let reqId = null;
+
+/* ═══════════════════════════════════════════════════════════════════
+   RÉSEAU
+   ═══════════════════════════════════════════════════════════════════ */
+function charger(silencieux) {
+  const tentative = (essai) => {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 20000);
+    return fetch(API_URL + '&t=' + Date.now(), { signal: ctrl.signal })
+      .then(r => { clearTimeout(timer); if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(txt => {
+        let data;
+        try { data = JSON.parse(txt); } catch (e) { throw new Error('Réponse non-JSON'); }
+        localStorage.setItem(CLE_CACHE, txt);
+        appliquer(data, false);
+      })
+      .catch(err => {
+        clearTimeout(timer);
+        if (essai < 2) return new Promise(r => setTimeout(r, 1200)).then(() => tentative(essai + 1));
+        throw err;
+      });
+  };
+
+  return tentative(1).catch(err => {
+    console.error('API :', err);
+    const cache = localStorage.getItem(CLE_CACHE);
+    if (cache && !D) { try { appliquer(JSON.parse(cache), true); } catch (e) {} }
+    if (!silencieux) toast(D ? "Données hors ligne, rafraîchis dans un instant." : "Le serveur ne répond pas. Vérifie ta connexion.");
+  });
+}
+
+function poster(payload) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 30000);
+  return fetch(POST_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+    signal: ctrl.signal
+  })
+  .then(r => { clearTimeout(timer); if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+  .then(txt => { try { return JSON.parse(txt); } catch (e) { throw new Error('Réponse non-JSON'); } });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RENDU
+   ═══════════════════════════════════════════════════════════════════ */
+function appliquer(data, horsLigne) {
+  const premier = !D;
+  D = data;
+
+  // Couleurs du maillot pilotées par l'onglet Config
+  const c = data.couleurs || {};
+  const rs = document.documentElement.style;
+  if (c.primaire)   rs.setProperty('--maillot-1', c.primaire);
+  if (c.secondaire) rs.setProperty('--maillot-2', c.secondaire);
+  if (c.texte)      rs.setProperty('--maillot-txt', c.texte);
+
+  document.getElementById('titre').textContent    = data.titre || 'Ton maillot';
+  document.getElementById('accroche').textContent = data.accroche || '';
+  document.getElementById('pill-saison').textContent = 'Saison ' + (data.saison || '—');
+
+  const limite = document.getElementById('pill-limite');
+  if (data.dateLimite) { limite.textContent = 'Jusqu\'au ' + data.dateLimite; limite.classList.remove('hidden'); }
+
+  if (data.logo) {
+    const b = document.getElementById('blason');
+    b.src = data.logo; b.alt = 'Blason Lykos Futsal Club'; b.classList.remove('hidden');
+  }
+
+  if (premier) { rendreFormules(); rendreTailles(); rendreSuggestions(); }
+  rendreGrille();
+  majCompteur();
+
+  const ouvert = data.ouvert !== false;
+  document.getElementById('formulaire').classList.toggle('hidden', !ouvert);
+  document.getElementById('barre').classList.toggle('hidden', !ouvert);
+  document.getElementById('ferme').classList.toggle('hidden', ouvert);
+  if (!ouvert) document.getElementById('ferme-txt').textContent = data.messageFerme || '';
+
+  afficherMaReservation();
+  if (horsLigne) toast('Affichage des dernières données connues.');
+}
+
+function rendreFormules() {
+  const zone = document.getElementById('formules');
+  zone.innerHTML = '';
+  (D.formules || []).forEach(f => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'formule'; b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = '<span class="coche"></span><span class="font-cond text-[17px] tracking-wide">' + echapper(f) + '</span>';
+    b.onclick = () => {
+      choix.formule = f;
+      [...zone.children].forEach(el => el.setAttribute('aria-pressed', el === b ? 'true' : 'false'));
+      majBlocsTailles(); verifier();
+    };
+    zone.appendChild(b);
+  });
+}
+
+function rendreTailles() {
+  const puces = (zone, liste, cle) => {
+    zone.innerHTML = '';
+    liste.forEach(v => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'puce'; b.textContent = v; b.setAttribute('aria-pressed', 'false');
+      b.onclick = () => {
+        choix[cle] = v;
+        [...zone.children].forEach(el => el.setAttribute('aria-pressed', el === b ? 'true' : 'false'));
+        verifier();
+      };
+      zone.appendChild(b);
+    });
+  };
+  puces(document.getElementById('tailles-haut'), D.tailles || [], 'tailleHaut');
+  puces(document.getElementById('tailles-bas'),  D.tailles || [], 'tailleBas');
+  puces(document.getElementById('pointures'),    D.pointures || [], 'pointure');
+}
+
+function sansBas() {
+  if (!choix.formule) return false;
+  return (D.formulesSansBas || []).some(kw => choix.formule.toLowerCase().includes(kw.toLowerCase()));
+}
+
+function majBlocsTailles() {
+  const off = sansBas();
+  document.getElementById('bloc-bas').classList.toggle('hidden', off);
+  document.getElementById('bloc-pointure').classList.toggle('hidden', off);
+  document.getElementById('note-loisirs').classList.toggle('hidden', !off);
+}
+
+function rendreSuggestions() {
+  const maj = () => {
+    const p = val('f-prenom'), n = val('f-nom');
+    const zone = document.getElementById('suggestions');
+    zone.innerHTML = '';
+    const props = [];
+    if (n) props.push(n.toUpperCase());
+    if (p) props.push(p);
+    if (p && n) props.push((p + ' ' + n).toUpperCase().slice(0, 12));
+    [...new Set(props)].filter(Boolean).forEach(s => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'font-cond text-[13px] tracking-wide px-2.5 py-1 rounded-md border border-white/15 text-acier hover:border-azur hover:text-craie';
+      b.textContent = s;
+      b.onclick = () => { document.getElementById('f-flocage').value = s; majMaillot(); verifier(); };
+      zone.appendChild(b);
+    });
+  };
+  ['f-prenom', 'f-nom'].forEach(id => document.getElementById(id).addEventListener('input', () => { maj(); verifier(); }));
+  document.getElementById('f-flocage').addEventListener('input', () => { majMaillot(); verifier(); });
+  document.getElementById('f-email').addEventListener('input', verifier);
+}
+
+function rendreGrille() {
+  const zone = document.getElementById('grille');
+  zone.innerHTML = '';
+  (D.numeros || []).forEach(x => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'plaque' + (x.pris ? ' pris' : '') + (choix.numero === x.n ? ' choisi' : '');
+    b.setAttribute('aria-pressed', choix.numero === x.n ? 'true' : 'false');
+    b.setAttribute('aria-label', x.pris ? ('Numéro ' + x.n + ', pris par ' + (x.flocage || 'un joueur')) : ('Numéro ' + x.n + ', libre'));
+    b.innerHTML = '<span>' + x.n + '</span>' +
+      (x.pris && x.flocage ? '<span class="flocage">' + echapper(x.flocage) + '</span>' : '');
+    b.onclick = () => {
+      if (x.pris) {
+        b.classList.add('secoue'); setTimeout(() => b.classList.remove('secoue'), 350);
+        toast('Le ' + x.n + ' est déjà à ' + (x.flocage || 'quelqu\'un') + '.');
+        return;
+      }
+      choix.numero = (choix.numero === x.n) ? null : x.n;
+      rendreGrille(); majMaillot(); verifier();
+    };
+    zone.appendChild(b);
+  });
+}
+
+function majCompteur() {
+  const libres = (D.numeros || []).filter(x => !x.pris).length;
+  const total  = (D.numeros || []).length;
+  const el = document.getElementById('compteur');
+  el.textContent = libres === 0
+    ? 'Plus aucun numéro libre'
+    : libres + (libres > 1 ? ' numéros libres' : ' numéro libre') + ' sur ' + total;
+}
+
+function majMaillot() {
+  const num = document.getElementById('num-maillot');
+  const floc = document.getElementById('floc-maillot');
+  const nouveau = choix.numero === null ? '?' : String(choix.numero);
+  if (num.textContent !== nouveau) {
+    num.textContent = nouveau;
+    num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop');
+  }
+  floc.textContent = val('f-flocage').toUpperCase();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   VALIDATION
+   ═══════════════════════════════════════════════════════════════════ */
+function manque() {
+  if (val('f-prenom').length < 2) return 'Écris ton prénom';
+  if (val('f-nom').length    < 2) return 'Écris ton nom';
+  if (val('f-flocage').length < 1) return 'Choisis ton flocage';
+  if (!choix.formule)             return 'Choisis ta formule';
+  if (!choix.tailleHaut)          return 'Choisis ta taille de haut';
+  if (!sansBas() && !choix.tailleBas) return 'Choisis ta taille de bas';
+  if (!sansBas() && !choix.pointure)  return 'Choisis ta pointure';
+  if (choix.numero === null)      return 'Choisis un numéro';
+  const mail = val('f-email');
+  if (mail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) return 'Vérifie ton adresse e-mail';
+  return null;
+}
+
+function verifier() {
+  const btn = document.getElementById('btn-reserver');
+  const pb = manque();
+  btn.disabled = !!pb;
+  btn.textContent = pb ? pb : 'Réserver le ' + choix.numero;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RÉCAP + ENVOI
+   ═══════════════════════════════════════════════════════════════════ */
+function ouvrirRecap() {
+  if (manque()) return;
+  const lignes = [
+    ['Numéro',   String(choix.numero)],
+    ['Flocage',  val('f-flocage').toUpperCase()],
+    ['Joueur',   val('f-prenom') + ' ' + val('f-nom')],
+    ['Formule',  choix.formule],
+    ['Haut',     choix.tailleHaut]
+  ];
+  if (!sansBas()) { lignes.push(['Bas', choix.tailleBas], ['Pointure', choix.pointure]); }
+  if (val('f-email')) lignes.push(['E-mail', val('f-email')]);
+
+  document.getElementById('recap-liste').innerHTML = lignes.map(l =>
+    '<div class="flex justify-between gap-4 border-b border-white/8 pb-1.5">' +
+    '<dt class="font-cond text-[13px] tracking-[.1em] uppercase text-acier">' + echapper(l[0]) + '</dt>' +
+    '<dd class="text-right font-semibold">' + echapper(l[1]) + '</dd></div>'
+  ).join('');
+
+  document.getElementById('recap-erreur').classList.add('hidden');
+  document.getElementById('voile-recap').classList.add('on');
+  reqId = 'r' + Date.now() + Math.random().toString(36).slice(2, 8);
+}
+
+function fermerRecap() { document.getElementById('voile-recap').classList.remove('on'); }
+
+function envoyer() {
+  if (envoiEnCours) return;
+  envoiEnCours = true;
+  const btn = document.getElementById('btn-confirmer');
+  btn.disabled = true; btn.textContent = 'Envoi en cours…';
+
+  poster({
+    action     : 'reserver',
+    reqId      : reqId,
+    numero     : choix.numero,
+    prenom     : val('f-prenom'),
+    nom        : val('f-nom'),
+    flocage    : val('f-flocage').toUpperCase(),
+    email      : val('f-email'),
+    formule    : choix.formule,
+    tailleHaut : choix.tailleHaut,
+    tailleBas  : sansBas() ? 'N/A' : choix.tailleBas,
+    pointure   : sansBas() ? 'N/A' : choix.pointure
+  })
+  .then(r => {
+    if (r && r.ok) {
+      localStorage.setItem(CLE_RESERV, JSON.stringify({
+        saison: D.saison, numero: r.numero, flocage: r.flocage
+      }));
+      succes(r);
+    } else {
+      erreurRecap((r && r.message) || 'La réservation n\'a pas abouti.');
+      if (r && r.code === 'PRIS') { choix.numero = null; charger(true).then(verifier); }
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    erreurRecap('Le serveur n\'a pas répondu. Vérifie la grille avant de réessayer : ta réservation est peut-être passée.');
+    charger(true);
+  })
+  .finally(() => {
+    envoiEnCours = false;
+    btn.disabled = false; btn.textContent = 'Réserver ce numéro';
+  });
+}
+
+function erreurRecap(msg) {
+  const e = document.getElementById('recap-erreur');
+  e.textContent = msg; e.classList.remove('hidden');
+}
+
+function succes(r) {
+  fermerRecap();
+  document.getElementById('ok-titre').textContent = 'Le ' + r.numero + ' est à toi';
+  document.getElementById('ok-sous').textContent  = 'Flocage : ' + r.flocage + ' — saison ' + D.saison;
+  document.getElementById('ok-fin').textContent   = D.messageFin || '';
+  document.getElementById('voile-ok').classList.add('on');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RÉSERVATION MÉMORISÉE
+   ═══════════════════════════════════════════════════════════════════ */
+function afficherMaReservation() {
+  const brut = localStorage.getItem(CLE_RESERV);
+  if (!brut) return;
+  let m; try { m = JSON.parse(brut); } catch (e) { return; }
+  if (!m || m.saison !== D.saison) { localStorage.removeItem(CLE_RESERV); return; }
+  document.getElementById('deja').classList.remove('hidden');
+  document.getElementById('deja-txt').textContent =
+    'Le numéro ' + m.numero + ' est enregistré à ton nom (' + m.flocage + ') pour la saison ' + m.saison + '.';
+}
+
+function oublierReservation() {
+  localStorage.removeItem(CLE_RESERV);
+  document.getElementById('deja').classList.add('hidden');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   UTILITAIRES
+   ═══════════════════════════════════════════════════════════════════ */
+function val(id) { return (document.getElementById(id).value || '').trim(); }
+
+function echapper(s) {
+  return String(s === undefined || s === null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+let toastTimer = null;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 3600);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DÉMARRAGE
+   ═══════════════════════════════════════════════════════════════════ */
+const cacheInitial = localStorage.getItem(CLE_CACHE);
+if (cacheInitial) { try { appliquer(JSON.parse(cacheInitial), true); } catch (e) {} }
+charger(false).then(verifier);
+
+// Rafraîchissement discret de la grille : deux joueurs peuvent viser le même numéro
+setInterval(() => { if (!envoiEnCours && document.visibilityState === 'visible') charger(true); }, 30000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') charger(true); });
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') fermerRecap(); });
+</script>
+</body>
+</html>
