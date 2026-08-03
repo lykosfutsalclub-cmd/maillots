@@ -39,11 +39,6 @@ tailwind.config = {
   :root{
     --marine:#101A52; --marine2:#18235F; --bleu:#1E5FD0; --bleu2:#2C3A95;
     --or:#C9A94F; --orclair:#E2C87E; --brume:#A9B6DC; --blanc:#FFFFFF;
-    /* Colorimétrie Macron — figée, plus pilotée par Config */
-    --kit-bleu:#1364CE;    /* bleu royal Macron #0301 / #03 */
-    --kit-marine:#16224E;  /* bleu marine Macron #07 */
-    --kit-blanc:#FFFFFF;
-    --kit-floc:#152A6B;    /* numéro et flocage */
   }
   html,body{ height:100%; }
   body{
@@ -87,8 +82,32 @@ tailwind.config = {
     letter-spacing:.1em; text-transform:uppercase; color:var(--brume);
     display:block; margin-bottom:6px;
   }
+  .aide{ font-size:12px; color:var(--brume); line-height:1.35; }
 
-  /* --- Choix --- */
+  /* --- Choix de flocage --- */
+  #flocage-choix{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .floc-opt{
+    background:rgba(0,0,0,.26); border:1px solid rgba(255,255,255,.14);
+    border-radius:12px; padding:12px 10px; cursor:pointer; text-align:center;
+    color:var(--blanc); transition:background .15s, border-color .15s, transform .12s;
+  }
+  .floc-opt:hover:not(:disabled){ border-color:var(--or); }
+  .floc-opt:disabled{ opacity:.4; cursor:not-allowed; }
+  .floc-opt .quoi{
+    font-family:'Barlow Condensed',sans-serif; font-size:11.5px; font-weight:600;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--brume);
+  }
+  .floc-opt .valeur{
+    font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:20px;
+    letter-spacing:.06em; text-transform:uppercase; line-height:1.15; margin-top:3px;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .floc-opt[aria-pressed="true"]{
+    background:var(--or); border-color:var(--or); color:#0E1440;
+  }
+  .floc-opt[aria-pressed="true"] .quoi{ color:rgba(14,20,64,.7); }
+
+  /* --- Choix tailles / formules --- */
   .puce{
     font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:17px;
     letter-spacing:.04em; padding:10px 0; min-width:52px; text-align:center;
@@ -116,6 +135,40 @@ tailwind.config = {
   .formule[aria-pressed="true"] .coche::after{
     content:''; position:absolute; inset:3px; border-radius:50%; background:var(--or);
   }
+
+  /* --- Maillot : photo + flocage superposé --- */
+  #vue-maillot{
+    position:relative; width:min(280px, 74vw); aspect-ratio:1/1;
+    container-type:inline-size;
+  }
+  #vue-maillot img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:contain;
+    transition:opacity .25s;
+  }
+  #img-face{ opacity:0; }
+  #vue-maillot.face #img-face{ opacity:1; }
+  #vue-maillot.face #img-dos{ opacity:0; }
+  #vue-maillot.face .floquage{ opacity:0; }
+  .floquage{
+    position:absolute; left:50%; transform:translateX(-50%);
+    color:#FFFFFF; text-align:center; white-space:nowrap; pointer-events:none;
+    transition:opacity .25s;
+    text-shadow:0 1px 3px rgba(0,0,0,.35);
+  }
+  #floc-nom{
+    top:24.5%; font-family:'Barlow Condensed',sans-serif; font-weight:700;
+    font-size:6cqw; letter-spacing:.16em;
+  }
+  #floc-num{
+    top:33%; font-family:'Anton',sans-serif; font-size:23cqw; line-height:1;
+  }
+  .bascule{ display:inline-flex; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.14); border-radius:10px; padding:3px; }
+  .bascule button{
+    font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--brume);
+    padding:6px 16px; border-radius:8px; cursor:pointer; background:transparent; border:none;
+  }
+  .bascule button[aria-pressed="true"]{ background:var(--or); color:#0E1440; }
 
   /* --- Plaques de numéros --- */
   #grille{ display:grid; grid-template-columns:repeat(auto-fill,minmax(68px,1fr)); gap:9px; }
@@ -158,12 +211,13 @@ tailwind.config = {
   }
 
   /* --- Vignettes dotation --- */
-  .kit-item{ width:88px; text-align:center; }
+  .kit-item{ width:92px; text-align:center; }
   .kit-item .cadre{
     background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.10);
-    border-radius:12px; padding:6px; display:flex; align-items:center; justify-content:center;
+    border-radius:12px; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
+    padding:5px;
   }
-  .kit-item svg{ width:100%; height:auto; display:block; }
+  .kit-item img{ width:100%; height:100%; object-fit:contain; display:block; }
   .kit-item .nom{
     font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:11.5px;
     letter-spacing:.1em; text-transform:uppercase; color:var(--blanc); margin-top:6px; line-height:1.1;
@@ -171,9 +225,8 @@ tailwind.config = {
   .kit-item .ref{ font-size:10px; color:var(--brume); line-height:1.2; }
 
   /* --- Animations --- */
-  #num-maillot{ transition:opacity .18s; }
   .pop{ animation:pop .28s ease-out; }
-  @keyframes pop{ 0%{transform:scale(.82);opacity:.4} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
+  @keyframes pop{ 0%{transform:translateX(-50%) scale(.8);opacity:.3} 60%{transform:translateX(-50%) scale(1.07)} 100%{transform:translateX(-50%) scale(1);opacity:1} }
   .secoue{ animation:secoue .34s; }
   @keyframes secoue{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
 
@@ -242,49 +295,19 @@ tailwind.config = {
 <section class="max-w-xl mx-auto px-5">
   <div class="carte py-5 px-4 flex flex-col items-center">
 
-    <svg viewBox="0 0 300 240" class="w-[210px] h-auto" role="img" aria-label="Maillot Propus Eco">
-      <defs>
-        <clipPath id="corpsMaillot">
-          <path d="M92 28 L88 214 Q150 226 212 214 L208 28 Q150 50 92 28 Z"/>
-        </clipPath>
-      </defs>
+    <div id="vue-maillot" role="img" aria-label="Aperçu du maillot Propus Eco">
+      <img id="img-dos"  src="kit/maillot_dos.png"  alt="">
+      <img id="img-face" src="kit/maillot_face.png" alt="">
+      <span id="floc-nom" class="floquage"></span>
+      <span id="floc-num" class="floquage">?</span>
+    </div>
 
-      <!-- Manches bleu royal + revers blancs -->
-      <path d="M92 28 L40 60 L62 112 L90 98 Z"    fill="var(--kit-bleu)"/>
-      <path d="M208 28 L260 60 L238 112 L210 98 Z" fill="var(--kit-bleu)"/>
-      <path d="M40 60 L62 112 L74 106 L52 54 Z"    fill="var(--kit-blanc)"/>
-      <path d="M260 60 L238 112 L226 106 L248 54 Z" fill="var(--kit-blanc)"/>
+    <div class="bascule mt-3" role="group" aria-label="Face ou dos">
+      <button type="button" id="btn-dos"  aria-pressed="true"  onclick="voirFace(false)">Dos</button>
+      <button type="button" id="btn-face" aria-pressed="false" onclick="voirFace(true)">Face</button>
+    </div>
 
-      <!-- Corps rayé : panneau blanc central pour le flocage -->
-      <g clip-path="url(#corpsMaillot)">
-        <rect x="0" y="0" width="300" height="240" fill="var(--kit-blanc)"/>
-        <rect x="102" y="0" width="26" height="240" fill="var(--kit-bleu)"/>
-        <rect x="172" y="0" width="26" height="240" fill="var(--kit-bleu)"/>
-      </g>
-
-      <!-- Col blanc liseré bleu -->
-      <path d="M96 26 Q150 48 204 26 L206 36 Q150 59 94 36 Z"
-            fill="var(--kit-blanc)" stroke="var(--kit-bleu)" stroke-width="2.5" stroke-linejoin="round"/>
-
-      <!-- Contour -->
-      <g fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.5" stroke-linejoin="round">
-        <path d="M92 28 L40 60 L62 112 L90 98"/>
-        <path d="M208 28 L260 60 L238 112 L210 98"/>
-        <path d="M92 28 L88 214 Q150 226 212 214 L208 28"/>
-      </g>
-
-      <!-- Flocage : contour blanc pour rester lisible sur les rayures -->
-      <text id="floc-maillot" x="150" y="92" text-anchor="middle"
-            font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="19"
-            letter-spacing="2" fill="var(--kit-floc)" stroke="var(--kit-blanc)"
-            stroke-width="4" paint-order="stroke"></text>
-      <text id="num-maillot" x="150" y="172" text-anchor="middle"
-            font-family="Anton, sans-serif" font-size="86"
-            fill="var(--kit-floc)" stroke="var(--kit-blanc)"
-            stroke-width="8" paint-order="stroke">?</text>
-    </svg>
-
-    <p id="compteur" class="font-cond text-[13px] tracking-[.14em] uppercase text-brume mt-2">—</p>
+    <p id="compteur" class="font-cond text-[13px] tracking-[.14em] uppercase text-brume mt-3">—</p>
 
     <!-- Dotation liée à la formule choisie -->
     <div id="dotation" class="w-full mt-5 pt-5 border-t border-white/10 hidden">
@@ -320,22 +343,35 @@ tailwind.config = {
         <input id="f-nom" class="champ" type="text" autocomplete="family-name" placeholder="Nom">
       </div>
     </div>
-    <div class="mt-3">
-      <label class="label" for="f-flocage">Flocage</label>
-      <input id="f-flocage" class="champ uppercase tracking-wide" type="text" maxlength="12" placeholder="NOM">
-      <div id="suggestions" class="flex flex-wrap gap-2 mt-2"></div>
-    </div>
   </section>
 
-  <!-- 2. Formule -->
+  <!-- 2. Flocage -->
   <section class="carte p-4">
-    <p class="etape"><span>2</span>Ta formule</p>
+    <p class="etape"><span>2</span>Ton flocage</p>
+    <p class="aide mb-3">Tape sur ce que tu veux voir imprimé dans le dos.</p>
+    <div id="flocage-choix">
+      <button type="button" id="floc-prenom" class="floc-opt" aria-pressed="false" disabled onclick="choisirFlocage('prenom')">
+        <span class="quoi">Prénom</span>
+        <span class="valeur" id="floc-prenom-val">—</span>
+      </button>
+      <button type="button" id="floc-nom-btn" class="floc-opt" aria-pressed="false" disabled onclick="choisirFlocage('nom')">
+        <span class="quoi">Nom</span>
+        <span class="valeur" id="floc-nom-val">—</span>
+      </button>
+    </div>
+    <p id="floc-vide" class="aide mt-3">Remplis d'abord ton prénom et ton nom au-dessus.</p>
+  </section>
+
+  <!-- 3. Formule -->
+  <section class="carte p-4">
+    <p class="etape"><span>3</span>Ta formule</p>
+    <p class="aide mb-3">Tape sur la formule que tu prends cette saison.</p>
     <div id="formules" class="space-y-2"></div>
   </section>
 
-  <!-- 3. Tailles -->
+  <!-- 4. Tailles -->
   <section class="carte p-4">
-    <p class="etape"><span>3</span>Tes tailles</p>
+    <p class="etape"><span>4</span>Tes tailles</p>
     <div>
       <label class="label">Haut</label>
       <div id="tailles-haut" class="grid grid-cols-6 gap-2"></div>
@@ -348,18 +384,18 @@ tailwind.config = {
       <label class="label">Pointure</label>
       <div id="pointures" class="grid grid-cols-6 gap-2"></div>
     </div>
-    <p id="note-loisirs" class="text-xs text-brume mt-3 hidden">Formule loisir : ni short ni chaussettes, on ne te demande que le haut.</p>
+    <p id="note-loisirs" class="aide mt-3 hidden">Formule loisir : ni short ni chaussettes, on ne te demande que le haut.</p>
   </section>
 
-  <!-- 4. Numéro -->
+  <!-- 5. Numéro -->
   <section class="carte p-4">
-    <p class="etape"><span>4</span>Ton numéro</p>
+    <p class="etape"><span>5</span>Ton numéro</p>
     <div class="legende">
       <span><i style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35)"></i>Libre</span>
       <span><i style="background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1)"></i>Pris</span>
     </div>
     <div id="grille" aria-label="Numéros de maillot"></div>
-    <p class="text-xs text-brume mt-3">Premier arrivé, premier servi.</p>
+    <p class="aide mt-3">Premier arrivé, premier servi.</p>
   </section>
 
 </main>
@@ -424,7 +460,7 @@ const CLE_RESERV = 'lykosMaReservation';
    ÉTAT
    ═══════════════════════════════════════════════════════════════════ */
 let D = null;
-let choix = { formule:'', tailleHaut:'', tailleBas:'', pointure:'', numero:null };
+let choix = { flocage:'', flocageSrc:'', formule:'', tailleHaut:'', tailleBas:'', pointure:'', numero:null };
 let envoiEnCours = false;
 let reqId = null;
 
@@ -485,9 +521,10 @@ function appliquer(data, horsLigne) {
   const limite = document.getElementById('pill-limite');
   if (data.dateLimite) { limite.textContent = 'Jusqu\'au ' + data.dateLimite; limite.classList.remove('hidden'); }
 
-  if (premier) chargerBlason(data.logo);
-
-  if (premier) { rendreFormules(); rendreTailles(); rendreSuggestions(); }
+  if (premier) {
+    chargerBlason(data.logo);
+    rendreFormules(); rendreTailles(); brancherIdentite();
+  }
   rendreGrille();
   majCompteur();
 
@@ -510,6 +547,89 @@ function chargerBlason(url) {
   b.onerror = () => { i++; if (i < pistes.length) b.setAttribute('src', pistes[i]); else b.classList.add('hidden'); };
   b.setAttribute('src', pistes[0]);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   FLOCAGE — prénom ou nom, au choix
+   ═══════════════════════════════════════════════════════════════════ */
+function brancherIdentite() {
+  ['f-prenom', 'f-nom'].forEach(id =>
+    document.getElementById(id).addEventListener('input', () => { majFlocageOptions(); verifier(); })
+  );
+  majFlocageOptions();
+}
+
+function majFlocageOptions() {
+  const p = val('f-prenom').toUpperCase();
+  const n = val('f-nom').toUpperCase();
+
+  const bp = document.getElementById('floc-prenom');
+  const bn = document.getElementById('floc-nom-btn');
+  document.getElementById('floc-prenom-val').textContent = p || '—';
+  document.getElementById('floc-nom-val').textContent    = n || '—';
+  bp.disabled = p.length < 2;
+  bn.disabled = n.length < 2;
+
+  // Si la valeur choisie a changé ou n'est plus valide, on resynchronise
+  if (choix.flocageSrc === 'prenom') { bp.disabled ? annulerFlocage() : (choix.flocage = p); }
+  if (choix.flocageSrc === 'nom')    { bn.disabled ? annulerFlocage() : (choix.flocage = n); }
+
+  document.getElementById('floc-vide').classList.toggle('hidden', !(bp.disabled && bn.disabled));
+  majMaillot();
+}
+
+function choisirFlocage(src) {
+  const v = (src === 'prenom' ? val('f-prenom') : val('f-nom')).toUpperCase();
+  if (v.length < 2) return;
+  choix.flocageSrc = (choix.flocageSrc === src) ? '' : src;
+  choix.flocage    = choix.flocageSrc ? v : '';
+  document.getElementById('floc-prenom').setAttribute('aria-pressed', choix.flocageSrc === 'prenom');
+  document.getElementById('floc-nom-btn').setAttribute('aria-pressed', choix.flocageSrc === 'nom');
+  majMaillot(); verifier();
+}
+
+function annulerFlocage() {
+  choix.flocageSrc = ''; choix.flocage = '';
+  document.getElementById('floc-prenom').setAttribute('aria-pressed', 'false');
+  document.getElementById('floc-nom-btn').setAttribute('aria-pressed', 'false');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MAILLOT — face / dos
+   ═══════════════════════════════════════════════════════════════════ */
+function voirFace(face) {
+  document.getElementById('vue-maillot').classList.toggle('face', face);
+  document.getElementById('btn-face').setAttribute('aria-pressed', face);
+  document.getElementById('btn-dos').setAttribute('aria-pressed', !face);
+}
+
+function majMaillot() {
+  const num  = document.getElementById('floc-num');
+  const nom  = document.getElementById('floc-nom');
+  const cible = choix.numero === null ? '?' : String(choix.numero);
+  if (num.textContent !== cible) {
+    num.textContent = cible;
+    num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop');
+  }
+  nom.textContent = choix.flocage;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FORMULES + DOTATION
+   ═══════════════════════════════════════════════════════════════════ */
+const KIT_IMG = {
+  maillot     : 'kit/maillot_face.png',
+  zip         : 'kit/survet_haut.png',
+  pantalon    : 'kit/survet_bas.png',
+  short       : 'kit/short.png',
+  chaussettes : 'kit/chaussettes.png'
+};
+const KIT_LABEL = {
+  maillot     : 'Maillot',
+  zip         : 'Haut survêt.',
+  pantalon    : 'Bas survêt.',
+  short       : 'Short',
+  chaussettes : 'Chaussettes'
+};
 
 function rendreFormules() {
   const zone = document.getElementById('formules');
@@ -539,73 +659,15 @@ function rendreFormules() {
   });
 }
 
-/* ─── Modélisation des pièces Macron ─── */
-const KIT_SVG = {
-  maillot:
-    '<svg viewBox="0 0 100 100"><defs><clipPath id="kMai">' +
-    '<path d="M32 18 L30 84 Q50 89 70 84 L68 18 Q50 26 32 18 Z"/></clipPath></defs>' +
-    '<path d="M32 18 L14 30 L22 50 L31 44 Z" fill="var(--kit-bleu)"/>' +
-    '<path d="M68 18 L86 30 L78 50 L69 44 Z" fill="var(--kit-bleu)"/>' +
-    '<path d="M14 30 L22 50 L27 47 L19 27 Z" fill="var(--kit-blanc)"/>' +
-    '<path d="M86 30 L78 50 L73 47 L81 27 Z" fill="var(--kit-blanc)"/>' +
-    '<g clip-path="url(#kMai)"><rect x="0" y="0" width="100" height="100" fill="var(--kit-blanc)"/>' +
-    '<rect x="36" y="0" width="9" height="100" fill="var(--kit-bleu)"/>' +
-    '<rect x="55" y="0" width="9" height="100" fill="var(--kit-bleu)"/></g>' +
-    '<path d="M33 17 Q50 25 67 17 L68 21 Q50 30 32 21 Z" fill="var(--kit-blanc)" stroke="var(--kit-bleu)" stroke-width="1.2"/>' +
-    '<path d="M32 18 L30 84 Q50 89 70 84 L68 18" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.4"/></svg>',
-
-  zip:
-    '<svg viewBox="0 0 100 100">' +
-    '<path d="M33 18 L16 28 L22 74 L33 72 Z" fill="var(--kit-bleu)"/>' +
-    '<path d="M67 18 L84 28 L78 74 L67 72 Z" fill="var(--kit-bleu)"/>' +
-    '<path d="M33 18 L30 86 Q50 90 70 86 L67 18 Q50 26 33 18 Z" fill="var(--kit-bleu)"/>' +
-    '<path d="M33 18 L16 28 L20 37 L35 27 Z" fill="var(--kit-blanc)"/>' +
-    '<path d="M67 18 L84 28 L80 37 L65 27 Z" fill="var(--kit-blanc)"/>' +
-    '<path d="M37 10 L63 10 L65 20 Q50 27 35 20 Z" fill="var(--kit-marine)"/>' +
-    '<rect x="48.6" y="12" width="2.8" height="24" fill="var(--kit-blanc)"/>' +
-    '<path d="M33 18 L30 86 Q50 90 70 86 L67 18" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.4"/></svg>',
-
-  pantalon:
-    '<svg viewBox="0 0 100 100">' +
-    '<path d="M34 12 L66 12 L68 44 L63 90 L54 90 L50 52 L46 90 L37 90 L32 44 Z" fill="var(--kit-marine)"/>' +
-    '<rect x="34" y="12" width="32" height="6" fill="var(--kit-bleu)"/>' +
-    '<path d="M35 20 L37.5 20 L39.5 89 L37 89 Z" fill="var(--kit-blanc)" opacity=".9"/>' +
-    '<path d="M65 20 L62.5 20 L60.5 89 L63 89 Z" fill="var(--kit-blanc)" opacity=".9"/>' +
-    '<path d="M34 12 L66 12 L68 44 L63 90 L54 90 L50 52 L46 90 L37 90 L32 44 Z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.4"/></svg>',
-
-  short:
-    '<svg viewBox="0 0 100 100">' +
-    '<path d="M30 26 L70 26 L72 54 L65 70 L54 70 L50 48 L46 70 L35 70 L28 54 Z" fill="var(--kit-bleu)"/>' +
-    '<rect x="30" y="26" width="40" height="5.5" fill="var(--kit-blanc)"/>' +
-    '<path d="M50 32 L50 41" stroke="var(--kit-blanc)" stroke-width="1.6"/>' +
-    '<path d="M30 26 L70 26 L72 54 L65 70 L54 70 L50 48 L46 70 L35 70 L28 54 Z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.4"/></svg>',
-
-  chaussettes:
-    '<svg viewBox="0 0 100 100">' +
-    '<path d="M24 18 L40 18 L40 60 L52 60 L52 74 L24 74 Z" fill="var(--kit-bleu)"/>' +
-    '<path d="M52 18 L68 18 L68 60 L80 60 L80 74 L52 74 Z" fill="var(--kit-bleu)"/>' +
-    '<rect x="24" y="18" width="16" height="6" fill="var(--kit-blanc)"/>' +
-    '<rect x="52" y="18" width="16" height="6" fill="var(--kit-blanc)"/>' +
-    '<g fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.4">' +
-    '<path d="M24 18 L40 18 L40 60 L52 60 L52 74 L24 74 Z"/>' +
-    '<path d="M52 18 L68 18 L68 60 L80 60 L80 74 L52 74 Z"/></g></svg>'
-};
-
-const KIT_LABEL = {
-  maillot     : 'Maillot',
-  zip         : 'Haut survêt.',
-  pantalon    : 'Bas survêt.',
-  short       : 'Short',
-  chaussettes : 'Chaussettes'
-};
-
 function rendreDotation(items) {
   const bloc = document.getElementById('dotation');
   const zone = document.getElementById('dotation-liste');
   if (!items || !items.length) { zone.innerHTML = ''; bloc.classList.add('hidden'); return; }
   zone.innerHTML = items.map(it => {
-    const svg = KIT_SVG[it.type] || KIT_SVG.maillot;
-    return '<div class="kit-item"><div class="cadre">' + svg + '</div>' +
+    const src = KIT_IMG[it.type];
+    if (!src) return '';
+    return '<div class="kit-item"><div class="cadre">' +
+           '<img src="' + src + '" alt="" loading="lazy"></div>' +
            '<p class="nom">' + echapper(KIT_LABEL[it.type] || it.type) + '</p>' +
            (it.nom ? '<p class="ref">' + echapper(it.nom) + '</p>' : '') + '</div>';
   }).join('');
@@ -643,28 +705,9 @@ function majBlocsTailles() {
   document.getElementById('note-loisirs').classList.toggle('hidden', !off);
 }
 
-function rendreSuggestions() {
-  const maj = () => {
-    const p = val('f-prenom'), n = val('f-nom');
-    const zone = document.getElementById('suggestions');
-    zone.innerHTML = '';
-    const props = [];
-    if (n) props.push(n.toUpperCase());
-    if (p) props.push(p.toUpperCase());
-    if (p && n) props.push((p + ' ' + n).toUpperCase().slice(0, 12));
-    [...new Set(props)].filter(Boolean).forEach(s => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'font-cond text-[13px] tracking-wide px-2.5 py-1 rounded-md border border-white/20 text-brume hover:border-or hover:text-white';
-      b.textContent = s;
-      b.onclick = () => { document.getElementById('f-flocage').value = s; majMaillot(); verifier(); };
-      zone.appendChild(b);
-    });
-  };
-  ['f-prenom', 'f-nom'].forEach(id => document.getElementById(id).addEventListener('input', () => { maj(); verifier(); }));
-  document.getElementById('f-flocage').addEventListener('input', () => { majMaillot(); verifier(); });
-}
-
+/* ═══════════════════════════════════════════════════════════════════
+   GRILLE DES NUMÉROS
+   ═══════════════════════════════════════════════════════════════════ */
 function rendreGrille() {
   const zone = document.getElementById('grille');
   zone.innerHTML = '';
@@ -686,6 +729,7 @@ function rendreGrille() {
       }
       choix.numero = (choix.numero === x.n) ? null : x.n;
       rendreGrille(); majMaillot(); verifier();
+      if (choix.numero !== null) voirFace(false);
     };
     zone.appendChild(b);
   });
@@ -700,24 +744,13 @@ function majCompteur() {
     : libres + (libres > 1 ? ' numéros libres' : ' numéro libre') + ' sur ' + total;
 }
 
-function majMaillot() {
-  const num  = document.getElementById('num-maillot');
-  const floc = document.getElementById('floc-maillot');
-  const nouveau = choix.numero === null ? '?' : String(choix.numero);
-  if (num.textContent !== nouveau) {
-    num.textContent = nouveau;
-    num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop');
-  }
-  floc.textContent = val('f-flocage').toUpperCase();
-}
-
 /* ═══════════════════════════════════════════════════════════════════
    VALIDATION
    ═══════════════════════════════════════════════════════════════════ */
 function manque() {
   if (val('f-prenom').length < 2)  return 'Écris ton prénom';
   if (val('f-nom').length    < 2)  return 'Écris ton nom';
-  if (val('f-flocage').length < 1) return 'Choisis ton flocage';
+  if (!choix.flocage)              return 'Choisis ton flocage';
   if (!choix.formule)              return 'Choisis ta formule';
   if (!choix.tailleHaut)           return 'Choisis ta taille de haut';
   if (!sansBas() && !choix.tailleBas) return 'Choisis ta taille de bas';
@@ -740,7 +773,7 @@ function ouvrirRecap() {
   if (manque()) return;
   const lignes = [
     ['Numéro',  String(choix.numero)],
-    ['Flocage', val('f-flocage').toUpperCase()],
+    ['Flocage', choix.flocage],
     ['Joueur',  val('f-prenom') + ' ' + val('f-nom')],
     ['Formule', choix.formule],
     ['Haut',    choix.tailleHaut]
@@ -772,7 +805,7 @@ function envoyer() {
     numero     : choix.numero,
     prenom     : val('f-prenom'),
     nom        : val('f-nom'),
-    flocage    : val('f-flocage').toUpperCase(),
+    flocage    : choix.flocage,
     formule    : choix.formule,
     tailleHaut : choix.tailleHaut,
     tailleBas  : sansBas() ? 'N/A' : choix.tailleBas,
