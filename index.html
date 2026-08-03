@@ -296,8 +296,8 @@ tailwind.config = {
   <div class="carte py-5 px-4 flex flex-col items-center">
 
     <div id="vue-maillot" role="img" aria-label="Aperçu du maillot Propus Eco">
-      <img id="img-dos"  src="kit/maillot_dos.png"  alt="">
-      <img id="img-face" src="kit/maillot_face.png" alt="">
+      <img id="img-dos"  src="maillot_dos.png"  alt="" onerror="this.style.display='none'">
+      <img id="img-face" src="maillot_face.png" alt="" onerror="this.style.display='none'">
       <span id="floc-nom" class="floquage"></span>
       <span id="floc-num" class="floquage">?</span>
     </div>
@@ -617,11 +617,11 @@ function majMaillot() {
    FORMULES + DOTATION
    ═══════════════════════════════════════════════════════════════════ */
 const KIT_IMG = {
-  maillot     : 'kit/maillot_face.png',
-  zip         : 'kit/survet_haut.png',
-  pantalon    : 'kit/survet_bas.png',
-  short       : 'kit/short.png',
-  chaussettes : 'kit/chaussettes.png'
+  maillot     : 'maillot_face.png',
+  zip         : 'survet_haut.png',
+  pantalon    : 'survet_bas.png',
+  short       : 'short.png',
+  chaussettes : 'chaussettes.png'
 };
 const KIT_LABEL = {
   maillot     : 'Maillot',
@@ -667,7 +667,7 @@ function rendreDotation(items) {
     const src = KIT_IMG[it.type];
     if (!src) return '';
     return '<div class="kit-item"><div class="cadre">' +
-           '<img src="' + src + '" alt="" loading="lazy"></div>' +
+           '<img src="' + src + '" alt="" loading="lazy" onerror="this.style.display=\'none\'"></div>' +
            '<p class="nom">' + echapper(KIT_LABEL[it.type] || it.type) + '</p>' +
            (it.nom ? '<p class="ref">' + echapper(it.nom) + '</p>' : '') + '</div>';
   }).join('');
