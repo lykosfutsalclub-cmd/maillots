@@ -156,11 +156,11 @@ tailwind.config = {
     text-shadow:0 1px 3px rgba(0,0,0,.35);
   }
   #floc-nom{
-    top:24.5%; font-family:'Barlow Condensed',sans-serif; font-weight:700;
-    font-size:6cqw; letter-spacing:.16em;
+    top:19%; font-family:'Barlow Condensed',sans-serif; font-weight:700;
+    font-size:8.5cqw; letter-spacing:.12em; line-height:1;
   }
   #floc-num{
-    top:33%; font-family:'Anton',sans-serif; font-size:23cqw; line-height:1;
+    top:31%; font-family:'Anton',sans-serif; font-size:23cqw; line-height:1;
   }
   .bascule{ display:inline-flex; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.14); border-radius:10px; padding:3px; }
   .bascule button{
@@ -222,7 +222,6 @@ tailwind.config = {
     font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:11.5px;
     letter-spacing:.1em; text-transform:uppercase; color:var(--blanc); margin-top:6px; line-height:1.1;
   }
-  .kit-item .ref{ font-size:10px; color:var(--brume); line-height:1.2; }
 
   /* --- Animations --- */
   .pop{ animation:pop .28s ease-out; }
@@ -611,6 +610,9 @@ function majMaillot() {
     num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop');
   }
   nom.textContent = choix.flocage;
+  // Un nom long doit rester dans la largeur du dos
+  const l = choix.flocage.length;
+  nom.style.fontSize = (l <= 8 ? 8.5 : l <= 11 ? 7 : l <= 14 ? 5.8 : 4.8) + 'cqw';
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -668,8 +670,7 @@ function rendreDotation(items) {
     if (!src) return '';
     return '<div class="kit-item"><div class="cadre">' +
            '<img src="' + src + '" alt="" loading="lazy" onerror="this.style.display=\'none\'"></div>' +
-           '<p class="nom">' + echapper(KIT_LABEL[it.type] || it.type) + '</p>' +
-           (it.nom ? '<p class="ref">' + echapper(it.nom) + '</p>' : '') + '</div>';
+           '<p class="nom">' + echapper(KIT_LABEL[it.type] || it.type) + '</p></div>';
   }).join('');
   bloc.classList.remove('hidden');
 }
